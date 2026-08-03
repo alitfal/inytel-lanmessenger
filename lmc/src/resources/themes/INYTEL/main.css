@@ -1,0 +1,210 @@
+/* INYTEL chat theme — based on the INYTEL brand identity guide
+   Palette: indigo (primary), emerald (success/broadcast), amber (files), slate (neutral)
+
+   Note: Qt's rich text engine (QTextDocument) does not render CSS
+   border-radius, so rounded corners are faked with a staircase of
+   thin divs, same technique as the original "Bubble" theme used. */
+
+* {
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-size: 9pt;
+}
+
+body { color: #0f172a; background-color: #f8fafc; }
+body a:link { color: #4f46e5; }
+body a:hover { color: #6366f1; }
+body a:active { color: #4f46e5; }
+body a:visited { color: #4f46e5; }
+
+body {
+  margin: 4px;
+}
+div#content {
+  font: 12px "Segoe UI", Arial;
+}
+div#insert {
+  display: none;
+}
+
+/* System messages (join/leave/status notices) */
+div.system {
+  padding: 6px 10px;
+  background: #e0e7ff;
+}
+div.system div.msg {
+  margin: 0px 0px 0px 0px;
+}
+div.system div.first {
+  margin: 4px 0px 4px 0px;
+}
+div.system div.Nth {
+  margin: 4px 0px 4px 0px;
+}
+div.system span.salutation {
+  font-weight: bold;
+  color: #4f46e5;
+  display: block;
+  margin: 0px 0px 1px 24px;
+}
+div.system .icon {
+  width: 16px;
+  height: 16px;
+  float: left;
+  margin: 0px 5px 0px 0px;
+}
+
+/* Rounded-corner staircase (faked, see note above) */
+div.b1 {
+  height: 1px;
+  font-size: 1px;
+  overflow: hidden;
+  margin: 0px 5px;
+}
+div.b2 {
+  height: 1px;
+  font-size: 1px;
+  overflow: hidden;
+  margin: 0px 3px;
+}
+div.b3 {
+  height: 1px;
+  font-size: 1px;
+  overflow: hidden;
+  margin: 0px 2px;
+}
+div.b4 {
+  height: 2px;
+  font-size: 1px;
+  overflow: hidden;
+  margin: 0px 1px;
+}
+
+/* Outgoing (yours) — indigo, brand primary */
+div.t-o, div.b-o { background-color: #4f46e5; }
+
+/* Incoming (theirs) — soft slate, neutral */
+div.t-i, div.b-i { background-color: #f1f5f9; }
+
+/* Broadcast — emerald, success accent */
+div.t-br, div.b-br { background-color: #d1fae5; }
+
+/* Chat bubbles */
+div.chat {
+  padding: 6px 10px;
+}
+div.chat div.msg {
+  margin: 0px 0px 0px 0px;
+}
+div.chat div.Nth {
+  margin: 5px 0px 0px 0px;
+}
+div.chat span.salutation {
+  font-weight: bold;
+  display: block;
+  margin: 0px 0px 2px 40px;
+}
+
+div.out {
+  text-align: left;
+  background: #4f46e5;
+  color: #ffffff;
+}
+div.out span.salutation {
+  color: #e0e7ff;
+}
+div.out span.time {
+  color: #c7d2fe;
+}
+div.out .icon {
+  float: left;
+  margin: 0px 8px 0px 0px;
+  width: 32px;
+  height: 32px;
+}
+
+div.in {
+  text-align: left;
+  background: #f1f5f9;
+  color: #0f172a;
+}
+div.in span.salutation {
+  color: #334155;
+}
+div.in span.time {
+  color: #94a3b8;
+}
+div.in .icon {
+  float: left;
+  margin: 0px 8px 0px 0px;
+  width: 32px;
+  height: 32px;
+}
+
+/* Broadcast messages — emerald, success accent */
+div.public {
+  padding: 6px 10px;
+  background: #d1fae5;
+}
+div.public div.msg {
+  margin: 0px 0px 0px 0px;
+  font-size: 9pt;
+}
+div.public span.salutation {
+  font-weight: bold;
+  color: #059669;
+  display: block;
+  margin: 0px 0px 4px 24px;
+}
+div.public .icon {
+  width: 16px;
+  height: 16px;
+  float: left;
+  margin: 0px 5px 0px 0px;
+}
+
+/* File transfer requests */
+div.request {
+  padding: 6px 10px;
+  background: #fef3c7;
+}
+div.request span.salutation {
+  color: #d97706;
+  font-weight: bold;
+  display: block;
+  margin: 0px 0px 1px 24px;
+}
+div.request span.details {
+  color: #4f46e5;
+  display: block;
+  margin: 0px 0px 1px 24px;
+}
+div.request span.links {
+  color: #64748b;
+  display: block;
+  margin: 0px 0px 1px 24px;
+}
+div.request .icon {
+  width: 16px;
+  height: 16px;
+  float: left;
+  margin: 0px 5px 0px 0px;
+}
+
+span.time {
+  font-weight: normal;
+  font-size: 8pt;
+  margin: 0px 6px 0px 0px;
+}
+
+/* Helper styles */
+div.clear {
+  clear: both;
+  height: 1px;
+  overflow: hidden;
+}
+
+div.break {
+  height: 1px;
+  margin: 4px 0px 0px 0px;
+  overflow: hidden;
+}

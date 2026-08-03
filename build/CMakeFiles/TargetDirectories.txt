@@ -1,0 +1,12 @@
+/Volumes/Samsung/inytel-lanmessenger-master/build/CMakeFiles/edit_cache.dir
+/Volumes/Samsung/inytel-lanmessenger-master/build/CMakeFiles/rebuild_cache.dir
+/Volumes/Samsung/inytel-lanmessenger-master/build/lmcapp/CMakeFiles/lmcapp.dir
+/Volumes/Samsung/inytel-lanmessenger-master/build/lmcapp/CMakeFiles/edit_cache.dir
+/Volumes/Samsung/inytel-lanmessenger-master/build/lmcapp/CMakeFiles/rebuild_cache.dir
+/Volumes/Samsung/inytel-lanmessenger-master/build/lmcapp/CMakeFiles/lmcapp_autogen_timestamp_deps.dir
+/Volumes/Samsung/inytel-lanmessenger-master/build/lmcapp/CMakeFiles/lmcapp_autogen.dir
+/Volumes/Samsung/inytel-lanmessenger-master/build/lmc/CMakeFiles/INYTEL-Messenger.dir
+/Volumes/Samsung/inytel-lanmessenger-master/build/lmc/CMakeFiles/edit_cache.dir
+/Volumes/Samsung/inytel-lanmessenger-master/build/lmc/CMakeFiles/rebuild_cache.dir
+/Volumes/Samsung/inytel-lanmessenger-master/build/lmc/CMakeFiles/INYTEL-Messenger_autogen_timestamp_deps.dir
+/Volumes/Samsung/inytel-lanmessenger-master/build/lmc/CMakeFiles/INYTEL-Messenger_autogen.dir

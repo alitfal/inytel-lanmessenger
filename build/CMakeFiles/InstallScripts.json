@@ -1,0 +1,9 @@
+{
+	"InstallScripts" : 
+	[
+		"/Volumes/Samsung/inytel-lanmessenger-master/build/cmake_install.cmake",
+		"/Volumes/Samsung/inytel-lanmessenger-master/build/lmcapp/cmake_install.cmake",
+		"/Volumes/Samsung/inytel-lanmessenger-master/build/lmc/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
