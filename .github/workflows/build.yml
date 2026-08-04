@@ -185,7 +185,7 @@ jobs:
         run: |
           cmake --build build --config Release --parallel
 
-      - name: Prepare artifact
+      - name: Package macOS application
         run: |
           APP_PATH="$(find build -type d -name 'INYTEL Messenger.app' -print -quit)"
 
@@ -194,7 +194,14 @@ jobs:
             exit 1
           fi
 
+          macdeployqt "$APP_PATH" \
+            -always-overwrite \
+            -verbose=2
+
+          codesign --force --deep --sign - "$APP_PATH"
+
           mkdir -p artifact
+
           ditto -c -k --sequesterRsrc --keepParent \
             "$APP_PATH" \
             artifact/INYTEL-Messenger-macOS.zip
