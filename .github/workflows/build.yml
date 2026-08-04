@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install system dependencies
         run: |
@@ -54,8 +54,118 @@ jobs:
           test -f artifact/lan-messenger
 
       - name: Upload Linux build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: inytel-messenger-linux
           path: artifact/lan-messenger
+          if-no-files-found: error
+
+  build-windows:
+    name: Windows · Qt 6
+    runs-on: windows-2022
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.3'
+          arch: 'win64_msvc2022_64'
+          cache: true
+
+      - name: Install OpenSSL
+        shell: pwsh
+        run: |
+          vcpkg install openssl:x64-windows
+
+      - name: Configure
+        shell: pwsh
+        run: |
+          cmake -S . -B build `
+            -G "Visual Studio 17 2022" `
+            -A x64 `
+            -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
+
+      - name: Build
+        shell: pwsh
+        run: |
+          cmake --build build --config Release --parallel
+
+      - name: Prepare artifact
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path artifact
+
+          $executable = Get-ChildItem `
+            -Path build `
+            -Recurse `
+            -Filter lmc.exe |
+            Select-Object -First 1
+
+          if (-not $executable) {
+            throw "No se encontró lmc.exe"
+          }
+
+          Copy-Item `
+            $executable.FullName `
+            artifact/INYTEL-Messenger.exe
+
+      - name: Upload Windows build
+        uses: actions/upload-artifact@v7
+        with:
+          name: inytel-messenger-windows
+          path: artifact/INYTEL-Messenger.exe
+          if-no-files-found: error
+
+  build-macos:
+    name: macOS · Qt 6
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Install system dependencies
+        run: |
+          brew install ninja openssl@3
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.3'
+          modules: 'qtmultimedia'
+          cache: true
+
+      - name: Configure
+        run: |
+          cmake -S . -B build \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DOPENSSL_ROOT_DIR="$(brew --prefix openssl@3)"
+
+      - name: Build
+        run: |
+          cmake --build build --config Release --parallel
+
+      - name: Prepare artifact
+        run: |
+          APP_PATH="$(find build -type d -name 'INYTEL Messenger.app' -print -quit)"
+
+          if [ -z "$APP_PATH" ]; then
+            echo "No se encontró INYTEL Messenger.app"
+            exit 1
+          fi
+
+          mkdir -p artifact
+          ditto -c -k --sequesterRsrc --keepParent \
+            "$APP_PATH" \
+            artifact/INYTEL-Messenger-macOS.zip
+
+      - name: Upload macOS build
+        uses: actions/upload-artifact@v7
+        with:
+          name: inytel-messenger-macos
+          path: artifact/INYTEL-Messenger-macOS.zip
           if-no-files-found: error
