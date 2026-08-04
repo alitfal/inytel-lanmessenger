@@ -28,7 +28,10 @@ set(LMCAPP_HEADERS
 
 add_library(lmcapp SHARED ${LMCAPP_SOURCES} ${LMCAPP_HEADERS})
 
-target_compile_definitions(lmcapp PRIVATE LMCAPP_LIBRARY)
+target_compile_definitions(lmcapp
+    PRIVATE QT_QTSINGLEAPPLICATION_EXPORT
+    INTERFACE QT_QTSINGLEAPPLICATION_IMPORT
+)
 
 target_include_directories(lmcapp
     PUBLIC
