@@ -105,8 +105,6 @@ QString Helper::getOSName(void) {
 		osName = "Windows 8";
 	else if(current >= QOperatingSystemVersion::Windows7)
 		osName = "Windows 7";
-	else if(current >= QOperatingSystemVersion::WindowsVista)
-		osName = "Windows Vista";
 	else
 		osName = "Windows";
 #elif defined Q_OS_MAC
