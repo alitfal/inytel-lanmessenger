@@ -93,10 +93,12 @@ jobs:
         run: |
           cmake --build build --config Release --parallel
 
-      - name: Prepare artifact
+      - name: Package Windows application
         shell: pwsh
         run: |
-          New-Item -ItemType Directory -Force -Path artifact
+          New-Item -ItemType Directory -Force -Path package
+          $packageDir = "package/INYTEL-Messenger"
+          New-Item -ItemType Directory -Force -Path $packageDir
 
           $executable = Get-ChildItem `
             -Path build `
@@ -108,15 +110,49 @@ jobs:
             throw "No se encontró lmc.exe"
           }
 
-          Copy-Item `
-            $executable.FullName `
-            artifact/INYTEL-Messenger.exe
+          $lmcappDll = Get-ChildItem `
+            -Path build `
+            -Recurse `
+            -Filter lmcapp.dll |
+            Select-Object -First 1
 
-      - name: Upload Windows build
+          if (-not $lmcappDll) {
+            throw "No se encontró lmcapp.dll"
+          }
+
+          Copy-Item $executable.FullName "$packageDir/INYTEL-Messenger.exe"
+          Copy-Item $lmcappDll.FullName "$packageDir/lmcapp.dll"
+
+          Get-ChildItem `
+            -Path $executable.Directory.FullName `
+            -Filter "*.qm" |
+            Copy-Item -Destination $packageDir
+
+          & windeployqt `
+            --release `
+            --compiler-runtime `
+            --no-translations `
+            "$packageDir/INYTEL-Messenger.exe"
+
+          $opensslBin = "C:/vcpkg/installed/x64-windows/bin"
+
+          Copy-Item "$opensslBin/libcrypto-3-x64.dll" $packageDir
+          Copy-Item "$opensslBin/libssl-3-x64.dll" $packageDir
+
+          Compress-Archive `
+            -Path "$packageDir/*" `
+            -DestinationPath "package/INYTEL-Messenger-Windows-x64.zip" `
+            -Force
+
+          if (-not (Test-Path "package/INYTEL-Messenger-Windows-x64.zip")) {
+            throw "No se pudo crear el paquete ZIP de Windows"
+          }
+
+      - name: Upload Windows package
         uses: actions/upload-artifact@v7
         with:
-          name: inytel-messenger-windows
-          path: artifact/INYTEL-Messenger.exe
+          name: INYTEL-Messenger-Windows-x64
+          path: package/INYTEL-Messenger-Windows-x64.zip
           if-no-files-found: error
 
   build-macos:
