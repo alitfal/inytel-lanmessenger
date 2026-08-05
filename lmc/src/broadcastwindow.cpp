@@ -100,7 +100,7 @@ void lmcBroadcastWindow::init(bool connected) {
 
 	setUIText();
 
-	ui.txtMessage->setStyleSheet("QTextEdit { " + fontStyle[fontSizeVal] + " }");
+	ui.txtMessage->setStyleSheet("QTextEdit { color: #0f172a; background-color: #ffffff; " + fontStyle[fontSizeVal] + " }");
 	ui.txtMessage->setFocus();
 }
 
@@ -191,14 +191,14 @@ void lmcBroadcastWindow::btnFontSize_clicked(void) {
 	fontSizeVal = (fontSizeVal == FS_COUNT - 1) ? 0 : fontSizeVal + 1;
 	pFontGroup->actions()[fontSizeVal]->setChecked(true);
 	pbtnFontSize->setText(lmcStrings::fontSize()[fontSizeVal]);
-	ui.txtMessage->setStyleSheet("QTextEdit { " + fontStyle[fontSizeVal] + " }");
+	ui.txtMessage->setStyleSheet("QTextEdit { color: #0f172a; background-color: #ffffff; " + fontStyle[fontSizeVal] + " }");
 }
 
 //	change the font size of text box through menu
 void lmcBroadcastWindow::fontAction_triggered(QAction* action) {
 	fontSizeVal = action->data().toInt();
 	pbtnFontSize->setText(lmcStrings::fontSize()[fontSizeVal]);
-	ui.txtMessage->setStyleSheet("QTextEdit { " + fontStyle[fontSizeVal] + " }");
+	ui.txtMessage->setStyleSheet("QTextEdit { color: #0f172a; background-color: #ffffff; " + fontStyle[fontSizeVal] + " }");
 }
 
 //	insert a smiley into the text box

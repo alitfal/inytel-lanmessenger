@@ -138,7 +138,7 @@ void lmcChatRoomWindow::init(User* pLocalUser, bool connected, QString thread) {
 	setUIText();
 
 	setMessageFont(font);
-	ui.txtMessage->setStyleSheet("QTextEdit {color: " + messageColor.name() + ";}");
+	ui.txtMessage->setStyleSheet("QTextEdit { background-color: #ffffff; color: " + messageColor.name() + "; }");
 	ui.txtMessage->setFocus();
 
 	QString themePath = pSettings->value(IDS_THEME, IDS_THEME_VAL).toString();
@@ -476,7 +476,7 @@ void lmcChatRoomWindow::btnFontColor_clicked(void) {
 	QColor color = QColorDialog::getColor(messageColor, this, tr("Select Color"));
 	if(color.isValid()) {
 		messageColor = color;
-		ui.txtMessage->setStyleSheet("QTextEdit {color: " + messageColor.name() + ";}");
+		ui.txtMessage->setStyleSheet("QTextEdit { background-color: #ffffff; color: " + messageColor.name() + "; }");
 	}
 }
 
