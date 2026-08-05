@@ -108,7 +108,7 @@ elseif(APPLE)
         OUTPUT_NAME "INYTEL Messenger"
     )
 endif()
-endif()
+
 
 target_link_libraries(${EXE_NAME} PRIVATE
     Qt6::Core Qt6::Gui Qt6::Network Qt6::Xml Qt6::Widgets Qt6::Sql
