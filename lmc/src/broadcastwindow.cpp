@@ -103,6 +103,23 @@ void lmcBroadcastWindow::init(bool connected) {
 	QFont msgFont = ui.txtMessage->font();
 	msgFont.setPointSizeF(fontSizePt[fontSizeVal]);
 	ui.txtMessage->setFont(msgFont);
+
+	//	Fixed, brand-safe text color -- this box never had its own color
+	//	logic before (it only ever set font-size), so it was silently
+	//	inheriting the OS palette's text color, which is light/white in
+	//	dark mode. Same fix as chatwindow.cpp/chatroomwindow.cpp.
+	QPalette messagePalette = ui.txtMessage->palette();
+	messagePalette.setColor(QPalette::Base, QColor("#ffffff"));
+	messagePalette.setColor(QPalette::Text, QColor("#0f172a"));
+	messagePalette.setColor(QPalette::HighlightedText, QColor("#ffffff"));
+	messagePalette.setColor(QPalette::Highlight, QColor("#5b4df5"));
+	ui.txtMessage->setPalette(messagePalette);
+	ui.txtMessage->setTextColor(QColor("#0f172a"));
+
+	QTextCharFormat messageFormat;
+	messageFormat.setForeground(QColor("#0f172a"));
+	ui.txtMessage->setCurrentCharFormat(messageFormat);
+
 	ui.txtMessage->setFocus();
 }
 
