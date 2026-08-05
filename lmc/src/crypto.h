@@ -46,18 +46,52 @@ public :
 
 	#else
 
-	EVP_CIPHER_CTX_wrapper() {
-		ctx = EVP_CIPHER_CTX_new();
-		EVP_CIPHER_CTX_init(ctx);
-	}
+EVP_CIPHER_CTX_wrapper()
+    : ctx(EVP_CIPHER_CTX_new()) {
+}
 
-	~EVP_CIPHER_CTX_wrapper() {
-		EVP_CIPHER_CTX_free(ctx);
-	}
+EVP_CIPHER_CTX_wrapper(const EVP_CIPHER_CTX_wrapper& other)
+    : ctx(EVP_CIPHER_CTX_new()) {
+    if (ctx && other.ctx)
+        EVP_CIPHER_CTX_copy(ctx, other.ctx);
+}
 
-	EVP_CIPHER_CTX* ptr() { return ctx; };
+EVP_CIPHER_CTX_wrapper& operator=(const EVP_CIPHER_CTX_wrapper& other) {
+    if (this != &other) {
+        if (!ctx)
+            ctx = EVP_CIPHER_CTX_new();
 
-	EVP_CIPHER_CTX* ctx;
+        if (ctx && other.ctx)
+            EVP_CIPHER_CTX_copy(ctx, other.ctx);
+    }
+
+    return *this;
+}
+
+EVP_CIPHER_CTX_wrapper(EVP_CIPHER_CTX_wrapper&& other) noexcept
+    : ctx(other.ctx) {
+    other.ctx = nullptr;
+}
+
+EVP_CIPHER_CTX_wrapper& operator=(EVP_CIPHER_CTX_wrapper&& other) noexcept {
+    if (this != &other) {
+        EVP_CIPHER_CTX_free(ctx);
+        ctx = other.ctx;
+        other.ctx = nullptr;
+    }
+
+    return *this;
+}
+
+~EVP_CIPHER_CTX_wrapper() {
+    EVP_CIPHER_CTX_free(ctx);
+}
+
+EVP_CIPHER_CTX* ptr() {
+    return ctx;
+}
+
+EVP_CIPHER_CTX* ctx;
 
 	#endif
 
