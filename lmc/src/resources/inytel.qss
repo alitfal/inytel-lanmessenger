@@ -311,3 +311,11 @@ QProgressBar::chunk {
     background-color: #10b981;
     border-radius: 6px;
 }
+QTextEdit,
+QPlainTextEdit,
+QLineEdit {
+    background-color: #ffffff;
+    color: #111827;
+    selection-background-color: #5b4df5;
+    selection-color: #ffffff;
+}
