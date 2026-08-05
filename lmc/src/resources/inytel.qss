@@ -113,6 +113,7 @@ QToolBar {
 /* ---------- Inputs ---------- */
 QLineEdit, QPlainTextEdit, QTextEdit {
     background-color: #ffffff;
+    color: #0f172a;
     border: 1px solid #e2e8f0;
     border-radius: 10px;
     padding: 5px 10px;
@@ -310,12 +311,4 @@ QProgressBar {
 QProgressBar::chunk {
     background-color: #10b981;
     border-radius: 6px;
-}
-QTextEdit,
-QPlainTextEdit,
-QLineEdit {
-    background-color: #ffffff;
-    color: #111827;
-    selection-background-color: #5b4df5;
-    selection-color: #ffffff;
 }

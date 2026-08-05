@@ -126,7 +126,7 @@ void lmcChatWindow::init(User* pLocalUser, User* pRemoteUser, bool connected) {
 	pMessageLog->trimMessage = pSettings->value(IDS_TRIMMESSAGE, IDS_TRIMMESSAGE_VAL).toBool();
 	QFont font = QApplication::font();
 	font.fromString(pSettings->value(IDS_FONT, IDS_FONT_VAL).toString());
-	messageColor = QApplication::palette().text().color();
+	messageColor = QColor("#0f172a");
 	messageColor.setNamedColor(pSettings->value(IDS_COLOR, IDS_COLOR_VAL).toString());
 	sendKeyMod = pSettings->value(IDS_SENDKEYMOD, IDS_SENDKEYMOD_VAL).toBool();
     clearOnClose = pSettings->value(IDS_CLEARONCLOSE, IDS_CLEARONCLOSE_VAL).toBool();
@@ -134,38 +134,33 @@ void lmcChatWindow::init(User* pLocalUser, User* pRemoteUser, bool connected) {
 	setUIText();
 
 	setMessageFont(font);
-#ifdef Q_OS_MACOS
-messageColor = QColor("#111827");
 
-QPalette messagePalette = ui.txtMessage->palette();
-messagePalette.setColor(QPalette::Base, QColor("#ffffff"));
-messagePalette.setColor(QPalette::Text, messageColor);
-messagePalette.setColor(QPalette::HighlightedText, QColor("#ffffff"));
-messagePalette.setColor(QPalette::Highlight, QColor("#5b4df5"));
+	//	Applied on every platform (not just macOS) so behavior is
+	//	identical on Windows/macOS/Linux: fixed, brand-safe colors that
+	//	never depend on the system's light/dark mode palette.
+	QPalette messagePalette = ui.txtMessage->palette();
+	messagePalette.setColor(QPalette::Base, QColor("#ffffff"));
+	messagePalette.setColor(QPalette::Text, messageColor);
+	messagePalette.setColor(QPalette::HighlightedText, QColor("#ffffff"));
+	messagePalette.setColor(QPalette::Highlight, QColor("#5b4df5"));
+	ui.txtMessage->setPalette(messagePalette);
+	ui.txtMessage->setTextColor(messageColor);
 
-ui.txtMessage->setPalette(messagePalette);
-ui.txtMessage->setTextColor(messageColor);
+	QTextCharFormat messageFormat;
+	messageFormat.setForeground(messageColor);
+	ui.txtMessage->setCurrentCharFormat(messageFormat);
 
-QTextCharFormat messageFormat;
-messageFormat.setForeground(messageColor);
-ui.txtMessage->setCurrentCharFormat(messageFormat);
-
-ui.txtMessage->setStyleSheet(
-    "QTextEdit {"
-    "  background-color: #ffffff;"
-    "  color: #111827;"
-    "  selection-background-color: #5b4df5;"
-    "  selection-color: #ffffff;"
-    "  border: 1px solid #6c63ff;"
-    "  border-radius: 10px;"
-    "  padding: 6px;"
-    "}"
-);
-#else
-ui.txtMessage->setStyleSheet(
-    "QTextEdit {color: " + messageColor.name() + ";}"
-);
-#endif
+	ui.txtMessage->setStyleSheet(
+		"QTextEdit {"
+		"  background-color: #ffffff;"
+		"  color: " + messageColor.name() + ";"
+		"  selection-background-color: #5b4df5;"
+		"  selection-color: #ffffff;"
+		"  border: 1px solid #6c63ff;"
+		"  border-radius: 10px;"
+		"  padding: 6px;"
+		"}"
+	);
 
 	QString themePath = pSettings->value(IDS_THEME, IDS_THEME_VAL).toString();
 	pMessageLog->initMessageLog(themePath);

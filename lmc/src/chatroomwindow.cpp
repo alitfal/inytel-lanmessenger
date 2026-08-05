@@ -125,7 +125,7 @@ void lmcChatRoomWindow::init(User* pLocalUser, bool connected, QString thread) {
 	pMessageLog->trimMessage = pSettings->value(IDS_TRIMMESSAGE, IDS_TRIMMESSAGE_VAL).toBool();
 	QFont font = QApplication::font();
 	font.fromString(pSettings->value(IDS_FONT, IDS_FONT_VAL).toString());
-	messageColor = QApplication::palette().text().color();
+	messageColor = QColor("#0f172a");
 	messageColor.setNamedColor(pSettings->value(IDS_COLOR, IDS_COLOR_VAL).toString());
 	sendKeyMod = pSettings->value(IDS_SENDKEYMOD, IDS_SENDKEYMOD_VAL).toBool();
 
