@@ -91,12 +91,23 @@ if(WIN32)
     set_target_properties(${EXE_NAME} PROPERTIES WIN32_EXECUTABLE TRUE)
     target_sources(${EXE_NAME} PRIVATE src/lmcwin32.rc)
 elseif(APPLE)
+    set(MACOS_ICON "${CMAKE_CURRENT_SOURCE_DIR}/src/lmc.icns")
+
+    set_source_files_properties(
+        "${MACOS_ICON}"
+        PROPERTIES
+        MACOSX_PACKAGE_LOCATION "Resources"
+    )
+
+    target_sources(${EXE_NAME} PRIVATE "${MACOS_ICON}")
+
     set_target_properties(${EXE_NAME} PROPERTIES
         MACOSX_BUNDLE TRUE
-        MACOSX_BUNDLE_ICON_FILE lmc.icns
+        MACOSX_BUNDLE_ICON_FILE "lmc.icns"
         MACOSX_BUNDLE_BUNDLE_NAME "INYTEL Messenger"
         OUTPUT_NAME "INYTEL Messenger"
     )
+endif()
 endif()
 
 target_link_libraries(${EXE_NAME} PRIVATE
