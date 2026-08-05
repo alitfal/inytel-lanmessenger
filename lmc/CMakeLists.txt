@@ -88,6 +88,7 @@ qt_add_executable(${EXE_NAME}
 )
 
 if(WIN32)
+    set_target_properties(${EXE_NAME} PROPERTIES WIN32_EXECUTABLE TRUE)
     target_sources(${EXE_NAME} PRIVATE src/lmcwin32.rc)
 elseif(APPLE)
     set_target_properties(${EXE_NAME} PROPERTIES
