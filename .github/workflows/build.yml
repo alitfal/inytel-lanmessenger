@@ -156,8 +156,21 @@ jobs:
           if-no-files-found: error
 
   build-macos:
-    name: macOS · Qt 6
-    runs-on: macos-14
+    name: macOS · ${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: arm64
+            runner: macos-14
+            qt_arch: clang_64
+            package_name: INYTEL-Messenger-macOS-Apple-Silicon
+          - arch: x86_64
+            runner: macos-15-intel
+            qt_arch: clang_64
+            package_name: INYTEL-Messenger-macOS-Intel
 
     steps:
       - name: Checkout repository
@@ -171,6 +184,7 @@ jobs:
         uses: jurplel/install-qt-action@v4
         with:
           version: '6.8.3'
+          arch: ${{ matrix.qt_arch }}
           modules: 'qtmultimedia'
           cache: true
 
@@ -179,7 +193,7 @@ jobs:
           cmake -S . -B build \
             -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" \
+            -DCMAKE_OSX_ARCHITECTURES="${{ matrix.arch }}" \
             -DCMAKE_OSX_DEPLOYMENT_TARGET="12.0" \
             -DOPENSSL_ROOT_DIR="$(brew --prefix openssl@3)"
 
@@ -206,11 +220,11 @@ jobs:
 
           ditto -c -k --sequesterRsrc --keepParent \
             "$APP_PATH" \
-            artifact/INYTEL-Messenger-macOS.zip
+            "artifact/${{ matrix.package_name }}.zip"
 
-      - name: Upload macOS build
+      - name: Upload macOS package
         uses: actions/upload-artifact@v7
         with:
-          name: inytel-messenger-macos
-          path: artifact/INYTEL-Messenger-macOS.zip
+          name: ${{ matrix.package_name }}
+          path: artifact/${{ matrix.package_name }}.zip
           if-no-files-found: error
