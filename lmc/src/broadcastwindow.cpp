@@ -107,7 +107,15 @@ void lmcBroadcastWindow::init(bool connected) {
 	//	Fixed, brand-safe text color -- this box never had its own color
 	//	logic before (it only ever set font-size), so it was silently
 	//	inheriting the OS palette's text color, which is light/white in
-	//	dark mode. Same fix as chatwindow.cpp/chatroomwindow.cpp.
+	//	dark mode. Same fix as chatwindow.cpp/chatroomwindow.cpp, PLUS an
+	//	explicit object-name stylesheet as a second, independent mechanism
+	//	-- QTextEdit's typed-text color has proven unreliable with the
+	//	palette alone, so we set it both ways.
+	ui.txtMessage->setObjectName("txtMessage");
+	ui.txtMessage->setStyleSheet(
+		"QTextEdit#txtMessage { color: #0f172a; background-color: #ffffff; }"
+	);
+
 	QPalette messagePalette = ui.txtMessage->palette();
 	messagePalette.setColor(QPalette::Base, QColor("#ffffff"));
 	messagePalette.setColor(QPalette::Text, QColor("#0f172a"));
