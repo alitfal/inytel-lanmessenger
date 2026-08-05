@@ -134,8 +134,38 @@ void lmcChatWindow::init(User* pLocalUser, User* pRemoteUser, bool connected) {
 	setUIText();
 
 	setMessageFont(font);
-	ui.txtMessage->setStyleSheet("QTextEdit {color: " + messageColor.name() + ";}");
-	ui.txtMessage->setFocus();
+#ifdef Q_OS_MACOS
+messageColor = QColor("#111827");
+
+QPalette messagePalette = ui.txtMessage->palette();
+messagePalette.setColor(QPalette::Base, QColor("#ffffff"));
+messagePalette.setColor(QPalette::Text, messageColor);
+messagePalette.setColor(QPalette::HighlightedText, QColor("#ffffff"));
+messagePalette.setColor(QPalette::Highlight, QColor("#5b4df5"));
+
+ui.txtMessage->setPalette(messagePalette);
+ui.txtMessage->setTextColor(messageColor);
+
+QTextCharFormat messageFormat;
+messageFormat.setForeground(messageColor);
+ui.txtMessage->setCurrentCharFormat(messageFormat);
+
+ui.txtMessage->setStyleSheet(
+    "QTextEdit {"
+    "  background-color: #ffffff;"
+    "  color: #111827;"
+    "  selection-background-color: #5b4df5;"
+    "  selection-color: #ffffff;"
+    "  border: 1px solid #6c63ff;"
+    "  border-radius: 10px;"
+    "  padding: 6px;"
+    "}"
+);
+#else
+ui.txtMessage->setStyleSheet(
+    "QTextEdit {color: " + messageColor.name() + ";}"
+);
+#endif
 
 	QString themePath = pSettings->value(IDS_THEME, IDS_THEME_VAL).toString();
 	pMessageLog->initMessageLog(themePath);
@@ -385,27 +415,30 @@ void lmcChatWindow::btnFont_clicked(void) {
 }
 
 void lmcChatWindow::btnFontColor_clicked(void) {
-	QColor color = QColorDialog::getColor(messageColor, this, tr("Select Color"));
-	if(color.isValid()) {
-		messageColor = color;
-		#ifdef Q_OS_MACOS
-ui.txtMessage->setStyleSheet(
-    "QTextEdit {"
-    "  background-color: #ffffff;"
-    "  color: #111827;"
-    "  selection-background-color: #5b4df5;"
-    "  selection-color: #ffffff;"
-    "  border: 1px solid #6c63ff;"
-    "  border-radius: 10px;"
-    "  padding: 6px;"
-    "}"
-);
+#ifdef Q_OS_MACOS
+    // En macOS mantenemos siempre un color oscuro para garantizar
+    // la visibilidad sobre el fondo blanco.
+    messageColor = QColor("#111827");
+    ui.txtMessage->setTextColor(messageColor);
+
+    QTextCharFormat messageFormat;
+    messageFormat.setForeground(messageColor);
+    ui.txtMessage->setCurrentCharFormat(messageFormat);
 #else
-ui.txtMessage->setStyleSheet(
-    "QTextEdit {color: " + messageColor.name() + ";}"
-);
+    QColor color = QColorDialog::getColor(
+        messageColor,
+        this,
+        tr("Select Color")
+    );
+
+    if(color.isValid()) {
+        messageColor = color;
+        ui.txtMessage->setTextColor(messageColor);
+        ui.txtMessage->setStyleSheet(
+            "QTextEdit {color: " + messageColor.name() + ";}"
+        );
+    }
 #endif
-	}
 }
 
 void lmcChatWindow::btnFile_clicked(void) {
@@ -605,8 +638,17 @@ void lmcChatWindow::sendMessage(void) {
 	else
 		appendMessageLog(MT_Error, NULL, NULL, NULL);
 
-	ui.txtMessage->clear();
-	ui.txtMessage->setFocus();
+ui.txtMessage->clear();
+
+#ifdef Q_OS_MACOS
+ui.txtMessage->setTextColor(QColor("#111827"));
+
+QTextCharFormat messageFormat;
+messageFormat.setForeground(QColor("#111827"));
+ui.txtMessage->setCurrentCharFormat(messageFormat);
+#endif
+
+ui.txtMessage->setFocus();
 }
 
 void lmcChatWindow::sendFile(QString* lpszFilePath) {
