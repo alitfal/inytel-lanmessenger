@@ -99,6 +99,15 @@ enum ItemDataRole {
 #define FS_COUNT	3
 //const QString fontSize[] = {"Small text", "Medium text", "Large text"};
 const QString fontStyle[] = {"font-size:8.25pt;", "font-size:9pt;", "font-size:10.5pt;"};
+//	Same sizes as fontStyle[], as plain point sizes for use with QFont
+//	directly (setFont()) instead of building inline stylesheets in code.
+//	Inline per-widget stylesheets are what caused the recurring dark-mode
+//	"invisible text" bug: each one had to separately remember to also set
+//	color/background-color, or it would silently fall through to whatever
+//	the OS palette provided. Using QFont for font size means these widgets
+//	never need a local stylesheet at all, so the app-wide inytel.qss is
+//	always the single source of truth for text/background color.
+const qreal fontSizePt[] = {8.25, 9.0, 10.5};
 
 //	status image definitions
 #define IDR_AVAILABLE		":/images/status/online"

@@ -138,7 +138,23 @@ void lmcChatRoomWindow::init(User* pLocalUser, bool connected, QString thread) {
 	setUIText();
 
 	setMessageFont(font);
-	ui.txtMessage->setStyleSheet("QTextEdit { background-color: #ffffff; color: " + messageColor.name() + "; }");
+
+	//	Same unified approach as chatwindow.cpp: text color goes through
+	//	QPalette/QTextCharFormat, never a local stylesheet, so it can
+	//	never accidentally omit background-color again -- everything
+	//	else comes solely from the app-wide inytel.qss.
+	QPalette messagePalette = ui.txtMessage->palette();
+	messagePalette.setColor(QPalette::Base, QColor("#ffffff"));
+	messagePalette.setColor(QPalette::Text, messageColor);
+	messagePalette.setColor(QPalette::HighlightedText, QColor("#ffffff"));
+	messagePalette.setColor(QPalette::Highlight, QColor("#5b4df5"));
+	ui.txtMessage->setPalette(messagePalette);
+	ui.txtMessage->setTextColor(messageColor);
+
+	QTextCharFormat messageFormat;
+	messageFormat.setForeground(messageColor);
+	ui.txtMessage->setCurrentCharFormat(messageFormat);
+
 	ui.txtMessage->setFocus();
 
 	QString themePath = pSettings->value(IDS_THEME, IDS_THEME_VAL).toString();
@@ -476,7 +492,18 @@ void lmcChatRoomWindow::btnFontColor_clicked(void) {
 	QColor color = QColorDialog::getColor(messageColor, this, tr("Select Color"));
 	if(color.isValid()) {
 		messageColor = color;
-		ui.txtMessage->setStyleSheet("QTextEdit { background-color: #ffffff; color: " + messageColor.name() + "; }");
+
+		QPalette messagePalette = ui.txtMessage->palette();
+		messagePalette.setColor(QPalette::Base, QColor("#ffffff"));
+		messagePalette.setColor(QPalette::Text, messageColor);
+		messagePalette.setColor(QPalette::HighlightedText, QColor("#ffffff"));
+		messagePalette.setColor(QPalette::Highlight, QColor("#5b4df5"));
+		ui.txtMessage->setPalette(messagePalette);
+		ui.txtMessage->setTextColor(messageColor);
+
+		QTextCharFormat messageFormat;
+		messageFormat.setForeground(messageColor);
+		ui.txtMessage->setCurrentCharFormat(messageFormat);
 	}
 }
 

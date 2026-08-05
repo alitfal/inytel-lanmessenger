@@ -137,7 +137,10 @@ void lmcChatWindow::init(User* pLocalUser, User* pRemoteUser, bool connected) {
 
 	//	Applied on every platform (not just macOS) so behavior is
 	//	identical on Windows/macOS/Linux: fixed, brand-safe colors that
-	//	never depend on the system's light/dark mode palette.
+	//	never depend on the system's light/dark mode palette. Everything
+	//	else (background, border, selection, padding) is governed solely
+	//	by the app-wide inytel.qss -- no local stylesheet here at all,
+	//	so there is exactly one place that can ever control it.
 	QPalette messagePalette = ui.txtMessage->palette();
 	messagePalette.setColor(QPalette::Base, QColor("#ffffff"));
 	messagePalette.setColor(QPalette::Text, messageColor);
@@ -149,18 +152,6 @@ void lmcChatWindow::init(User* pLocalUser, User* pRemoteUser, bool connected) {
 	QTextCharFormat messageFormat;
 	messageFormat.setForeground(messageColor);
 	ui.txtMessage->setCurrentCharFormat(messageFormat);
-
-	ui.txtMessage->setStyleSheet(
-		"QTextEdit {"
-		"  background-color: #ffffff;"
-		"  color: " + messageColor.name() + ";"
-		"  selection-background-color: #5b4df5;"
-		"  selection-color: #ffffff;"
-		"  border: 1px solid #6c63ff;"
-		"  border-radius: 10px;"
-		"  padding: 6px;"
-		"}"
-	);
 
 	QString themePath = pSettings->value(IDS_THEME, IDS_THEME_VAL).toString();
 	pMessageLog->initMessageLog(themePath);
@@ -410,30 +401,22 @@ void lmcChatWindow::btnFont_clicked(void) {
 }
 
 void lmcChatWindow::btnFontColor_clicked(void) {
-#ifdef Q_OS_MACOS
-    // En macOS mantenemos siempre un color oscuro para garantizar
-    // la visibilidad sobre el fondo blanco.
-    messageColor = QColor("#111827");
-    ui.txtMessage->setTextColor(messageColor);
+	QColor color = QColorDialog::getColor(messageColor, this, tr("Select Color"));
+	if(color.isValid()) {
+		messageColor = color;
 
-    QTextCharFormat messageFormat;
-    messageFormat.setForeground(messageColor);
-    ui.txtMessage->setCurrentCharFormat(messageFormat);
-#else
-    QColor color = QColorDialog::getColor(
-        messageColor,
-        this,
-        tr("Select Color")
-    );
+		QPalette messagePalette = ui.txtMessage->palette();
+		messagePalette.setColor(QPalette::Base, QColor("#ffffff"));
+		messagePalette.setColor(QPalette::Text, messageColor);
+		messagePalette.setColor(QPalette::HighlightedText, QColor("#ffffff"));
+		messagePalette.setColor(QPalette::Highlight, QColor("#5b4df5"));
+		ui.txtMessage->setPalette(messagePalette);
+		ui.txtMessage->setTextColor(messageColor);
 
-    if(color.isValid()) {
-        messageColor = color;
-        ui.txtMessage->setTextColor(messageColor);
-        ui.txtMessage->setStyleSheet(
-            "QTextEdit {color: " + messageColor.name() + ";}"
-        );
-    }
-#endif
+		QTextCharFormat messageFormat;
+		messageFormat.setForeground(messageColor);
+		ui.txtMessage->setCurrentCharFormat(messageFormat);
+	}
 }
 
 void lmcChatWindow::btnFile_clicked(void) {
