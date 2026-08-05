@@ -388,7 +388,23 @@ void lmcChatWindow::btnFontColor_clicked(void) {
 	QColor color = QColorDialog::getColor(messageColor, this, tr("Select Color"));
 	if(color.isValid()) {
 		messageColor = color;
-		ui.txtMessage->setStyleSheet("QTextEdit {color: " + messageColor.name() + ";}");
+		#ifdef Q_OS_MACOS
+ui.txtMessage->setStyleSheet(
+    "QTextEdit {"
+    "  background-color: #ffffff;"
+    "  color: #111827;"
+    "  selection-background-color: #5b4df5;"
+    "  selection-color: #ffffff;"
+    "  border: 1px solid #6c63ff;"
+    "  border-radius: 10px;"
+    "  padding: 6px;"
+    "}"
+);
+#else
+ui.txtMessage->setStyleSheet(
+    "QTextEdit {color: " + messageColor.name() + ";}"
+);
+#endif
 	}
 }
 
