@@ -597,26 +597,49 @@ QString lmcMessageBubbleLog::getChatRoomMessage(GroupMsgOp op) {
 }
 
 void lmcMessageBubbleLog::fileOperation(QString fileId, QString action, QString fileType, FileMode mode) {
+	//	This mirrors lmcMessageLog::fileOperation() (messagelog.cpp) exactly.
+	//	The first version of this rewrite only sent XN_FILEID/XN_FILEOP,
+	//	silently dropping XN_MODE/XN_FILETYPE/XN_FILEPATH/XN_FILENAME/
+	//	XN_FILESIZE -- which is why accepted transfers got stuck at
+	//	"0 bytes" and never actually completed: the receiver never knew
+	//	the file's real path, name or size.
 	XmlMessage fileData, xmlMessage;
-	MessageType type = (fileType.compare("file") == 0) ? MT_File : MT_Folder;
 
-	if(mode == FM_Send)
-		fileData = sendFileMap.value(fileId);
+	MessageType type;
+	if(fileType.compare("file") == 0)
+		type = MT_File;
+	else if(fileType.compare("folder") == 0)
+		type = MT_Folder;
 	else
+		return;
+
+	if(action.compare(acceptOp) == 0) {
 		fileData = receiveFileMap.value(fileId);
-
-	xmlMessage.addData(XN_FILEID, fileId);
-
-	if(action.compare(acceptOp) == 0)
+		xmlMessage.addData(XN_MODE, FileModeNames[FM_Receive]);
+		xmlMessage.addData(XN_FILETYPE, FileTypeNames[FT_Normal]);
 		xmlMessage.addData(XN_FILEOP, FileOpNames[FO_Accept]);
-	else if(action.compare(declineOp) == 0)
+		xmlMessage.addData(XN_FILEID, fileData.data(XN_FILEID));
+		xmlMessage.addData(XN_FILEPATH, fileData.data(XN_FILEPATH));
+		xmlMessage.addData(XN_FILENAME, fileData.data(XN_FILENAME));
+		xmlMessage.addData(XN_FILESIZE, fileData.data(XN_FILESIZE));
+	} else if(action.compare(declineOp) == 0) {
+		fileData = receiveFileMap.value(fileId);
+		xmlMessage.addData(XN_MODE, FileModeNames[FM_Receive]);
+		xmlMessage.addData(XN_FILETYPE, FileTypeNames[FT_Normal]);
 		xmlMessage.addData(XN_FILEOP, FileOpNames[FO_Decline]);
-	else if(action.compare(cancelOp) == 0)
+		xmlMessage.addData(XN_FILEID, fileData.data(XN_FILEID));
+	} else if(action.compare(cancelOp) == 0) {
+		if(mode == FM_Receive)
+			fileData = receiveFileMap.value(fileId);
+		else
+			fileData = sendFileMap.value(fileId);
+		xmlMessage.addData(XN_MODE, FileModeNames[mode]);
+		xmlMessage.addData(XN_FILETYPE, FileTypeNames[FT_Normal]);
 		xmlMessage.addData(XN_FILEOP, FileOpNames[FO_Cancel]);
+		xmlMessage.addData(XN_FILEID, fileData.data(XN_FILEID));
+	}
 
-	QString userId = peerId;
-	QString userName = peerName;
-	emit messageSent(type, &userId, &xmlMessage);
+	emit messageSent(type, &peerId, &xmlMessage);
 }
 
 void lmcMessageBubbleLog::decodeMessage(QString* lpszMessage, bool useDefaults) {
